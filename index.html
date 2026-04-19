@@ -1,77 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Okta Cert</title>
+  <title>Okta Sign-In</title>
 
-  <!-- Okta Sign-In Widget JS -->
-  <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.11.0/js/okta-sign-in.min.js"></script>
-
-  <!-- Okta CSS -->
-  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.11.0/css/okta-sign-in.min.css" rel="stylesheet">
-  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.11.0/css/okta-theme.css" rel="stylesheet">
+  <script src="https://global.oktacdn.com/okta-signin-widget/7.0.0/js/okta-sign-in.min.js"></script>
+  <link href="https://global.oktacdn.com/okta-signin-widget/7.0.0/css/okta-sign-in.min.css" rel="stylesheet"/>
 </head>
-
 <body>
-  <div class="title">Welcome to Okta Cert</div>
-  <hr>
-  <div class="title">Please enter your credentials below to continue to your Okta org.</div>
 
-  <!-- Widget Container -->
-  <div id="okta-login-container"></div>
+<div id="okta-login-container"></div>
 
-  <div class="footer">
-    Copyright 2009-2022 Okta Cert. All rights reserved.
-  </div>
-
-  <script>
-    //  IMPORTANT: Replace with your Okta Org URL
-    var orgUrl = "https://yasas.okta.com";
-
-    // Initialize widget
-    var oktaSignIn = new OktaSignIn({
-      baseUrl: orgUrl
-    });
-
-    // Render widget
-    oktaSignIn.renderEl(
-      { el: '#okta-login-container' },
-
-      //  SUCCESS
-      function (res) {
-        if (res.status === 'SUCCESS') {
-
-          //  THIS IS THE MOST IMPORTANT LINE (Exam Key)
-          res.session.setCookieAndRedirect(orgUrl);
-        }
-      },
-
-      //  ERROR
-      function (err) {
-        console.error(err);
-      }
-    );
-  </script>
-
-  <style>
-    .title {
-      padding: 40px;
-      font: normal 34px Verdana;
-      text-align: center;
-      letter-spacing: 5px;
+<script>
+  var signIn = new OktaSignIn({
+    baseUrl: "https://integrator-1473679.okta.com",
+    clientId: '0oa11sp6iixWdov1a698',
+    redirectUri: "https://sricharankt.github.io/Okta-Dev-Practice/"
+    authParams: {
+      issuer: 'https://integrator-1473679.okta.com/oauth2/default',
+      responseType: ['token', 'id_token'],
+      scopes: ['openid', 'profile', 'email']
     }
+  });
 
-    .footer {
-      font: normal 14px Verdana;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background-color: #F0F0F0;
-      text-align: center;
-    }
-  </style>
+  signIn.showSignInToGetTokens({
+    el: '#okta-login-container'
+  }).then(function(tokens) {
+    console.log(tokens);
+  }).catch(function(err) {
+    console.error(err);
+  });
+</script>
 
 </body>
 </html>
