@@ -1,35 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Okta Sign-In</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Okta Federation Demo</title>
 
-  <script src="https://global.oktacdn.com/okta-signin-widget/7.0.0/js/okta-sign-in.min.js"></script>
-  <link href="https://global.oktacdn.com/okta-signin-widget/7.0.0/css/okta-sign-in.min.css" rel="stylesheet"/>
+  <!-- Okta Sign-In Widget JS -->
+  <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/7.40.5/js/okta-sign-in.min.js"></script>
+
+  <!-- Okta CSS -->
+  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/7.40.5/css/okta-sign-in.min.css" rel="stylesheet">
+  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/7.40.5/css/okta-theme.css" rel="stylesheet">
 </head>
+
 <body>
+  <h2 style="text-align:center;">Okta Federation (OIDC)</h2>
 
-<div id="okta-login-container"></div>
+  <!-- Widget -->
+  <div id="okta-login-container"></div>
 
-<script>
-  var signIn = new OktaSignIn({
-    baseUrl: "https://integrator-1473679.okta.com",
-    clientId: '0oa11sp6iixWdov1a698',
-    redirectUri: "https://sricharankt.github.io/Okta-Dev-Practice/"
-    authParams: {
-      issuer: 'https://integrator-1473679.okta.com/oauth2/default',
-      responseType: ['token', 'id_token'],
-      scopes: ['openid', 'profile', 'email']
-    }
-  });
+  <!-- Claims output -->
+  <div id="user-info" style="margin:20px;"></div>
 
-  signIn.showSignInToGetTokens({
-    el: '#okta-login-container'
-  }).then(function(tokens) {
-    console.log(tokens);
-  }).catch(function(err) {
-    console.error(err);
-  });
-</script>
+  <script>
+    var oktaSignIn = new OktaSignIn({
+      baseUrl: "https://integrator-1473679.okta.com",
+
+      //  REQUIRED FOR OIDC
+      clientId: "0oa11sp6iixWdov1a698",
+      redirectUri: "https://sricharankt.github.io/Okta-Dev-Practice/",
+
+      authParams: {
+        issuer: "https://integrator-1473679.okta.com/oauth2/default",
+        responseType: ['id_token','token'],   //  KEY
+        scopes: ['openid', 'profile', 'email']
+      }
+    });
+
+    oktaSignIn.showSignInToGetTokens({
+      el: '#okta-login-container'
+    }).then(function(tokens) {
+
+      //  GET ID TOKEN
+      const idToken = tokens.idToken;
+
+      console.log("ID Token:", idToken);
+      console.log("Claims:", idToken.claims);
+
+      //  DISPLAY CLAIMS (EXAM IMPORTANT)
+      document.getElementById('user-info').innerHTML = `
+        <h3>User Claims</h3>
+        <pre>${JSON.stringify(idToken.claims, null, 2)}</pre>
+      `;
+
+    }).catch(function(err) {
+      console.error(err);
+    });
+  </script>
 
 </body>
 </html>
